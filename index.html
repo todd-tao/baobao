@@ -186,7 +186,7 @@ function hideUi(ui){
 
 function checkDate(){
   var nowtime = new Date().getTime(); // 现在时间转换为时间戳
-  var futruetime =  new Date('2019,11,14').getTime(); // 未来时间转换为时间戳
+  var futruetime =  new Date('2019/11/14').getTime(); // 未来时间转换为时间戳
   var msec = nowtime-futruetime; // 毫秒 未来时间-现在时间
   var time = (msec/1000);  // 毫秒/1000
   var day = parseInt(time/86400); // 天  24*60*60*1000
@@ -237,7 +237,7 @@ function runHtml(){
     return;
   }
   if(checkDate()&& mark ==2){
-    setTimeout(time(h1,'2019,11,14'),1000);
+    setTimeout(time(h1,'2019/11/14'),1000);
     return;
   }
   else {
