@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>I love you 宝 宝！</title>
+<style>
+body{
+  overflow: hidden;
+  margin: 0;
+}
+h1{
+  position: fixed;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  transform:translateY(-50%);
+  font-family: 'Love Ya Like A Sister', cursive;
+  font-size: 40px;
+  color: #c70012;
+  padding: 0 20px;
+}
+h1 span{
+    font-size:20px;
+}
+
+.button {
+    background-color: white; /* Green */
+    border: black;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    width: 175px;
+    border-radius: 50%;
+}
+</style>
+
+</head>
+<body>
+<h1 id="h1" style="display">
+  <p id = "p1" >
+    来自猪头的生日祝福
+  </p>
+  <input id = "insertDay" disabled="true" style="display: none"> <span id="s1" style="display: none">天</span>
+  <button class = "button" type="button" id = "btn01"onclick="runHtml()" >宝宝点一下！</button>
+</h1>
+<canvas id = "cv"></canvas> <!--canvas 画布-->
+
+
+<script>
+var mark = 0;
+var canvas = document.querySelector("canvas"),
+  ctx = canvas.getContext("2d");
+
+var ww,wh;
+
+function onResize(){
+  ww = canvas.width = window.innerWidth;
+  wh = canvas.height = window.innerHeight;
+}
+
+ctx.strokeStyle = "red";
+ctx.shadowBlur = 25;
+ctx.shadowColor = "hsla(0, 100%, 60%,0.5)";
+
+var precision = 100;
+var hearts = [];
+var mouseMoved = false;
+function onMove(e){
+  mouseMoved = true;
+  if(e.type === "touchmove"){
+    hearts.push(new Heart(e.touches[0].clientX, e.touches[0].clientY));
+    hearts.push(new Heart(e.touches[0].clientX, e.touches[0].clientY));
+  }
+  else{
+    hearts.push(new Heart(e.clientX, e.clientY));
+    hearts.push(new Heart(e.clientX, e.clientY));
+  }
+}
+
+var Heart = function(x,y){
+  this.x = x || Math.random()*ww;
+  this.y = y || Math.random()*wh;
+  this.size = Math.random()*2 + 1;
+  this.shadowBlur = Math.random() * 10;
+  this.speedX = (Math.random()+0.2-0.6) * 8;
+  this.speedY = (Math.random()+0.2-0.6) * 8;
+  this.speedSize = Math.random()*0.05 + 0.01;
+  this.opacity = 1;
+  this.vertices = [];
+  for (var i = 0; i < precision; i++) {
+    var step = (i / precision - 0.5) * (Math.PI * 2);
+    var vector = {
+      x : (15 * Math.pow(Math.sin(step), 3)),
+      y : -(13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 * step)) 
+    }
+    this.vertices.push(vector);
+  }
+}
+
+Heart.prototype.draw = function(){
+  this.size -= this.speedSize;
+  this.x += this.speedX;
+  this.y += this.speedY;
+  ctx.save();
+  ctx.translate(-1000,this.y);
+  ctx.scale(this.size, this.size);
+  ctx.beginPath();
+  for (var i = 0; i < precision; i++) {
+    var vector = this.vertices[i];
+    ctx.lineTo(vector.x, vector.y);
+  }
+  ctx.globalAlpha = this.size;
+  ctx.shadowBlur = Math.round((3 - this.size) * 10);
+  ctx.shadowColor = "hsla(0, 100%, 60%,0.5)";
+  ctx.shadowOffsetX = this.x + 1000;
+  ctx.globalCompositeOperation = "screen"
+  ctx.closePath();
+  ctx.fill()
+  ctx.restore();
+};
+
+
+function render(a){
+  requestAnimationFrame(render);
+
+  hearts.push(new Heart())
+  ctx.clearRect(0,0,ww,wh);
+  for (var i = 0; i < hearts.length; i++) {
+    hearts[i].draw();
+    if(hearts[i].size <= 0){
+      hearts.splice(i,1);
+      i--;
+    }
+  }
+}
+
+
+onResize();
+window.addEventListener("mousemove", onMove);
+window.addEventListener("touchmove", onMove);
+window.addEventListener("resize", onResize);
+requestAnimationFrame(render);
+
+
+    function time(obj,futimg){
+        var nowtime = new Date().getTime(); // 现在时间转换为时间戳
+        var futruetime =  new Date(futimg).getTime(); // 未来时间转换为时间戳
+        var msec = nowtime-futruetime; // 毫秒 未来时间-现在时间
+        var time = (msec/1000);  // 毫秒/1000
+        var day = parseInt(time/86400); // 天  24*60*60*1000 
+        var hour = parseInt(time/3600)-24*day;    // 小时 60*60 总小时数-过去的2小时数=现在的小时数 
+        var minute = parseInt(time%3600/60); // 分 -(day*24) 以60秒为一整份 取余 剩下秒数 秒数/60 就是分钟数
+        var second = parseInt(time%60);  // 以60秒为一整份 取余 剩下秒数
+//              console.log(hour+":"+minute+":"+second)
+//              alert(hour)
+        //obj.style.display="none";
+        obj.innerHTML="生日快乐！<br>宝宝！<br>咱们在一起已经：<br>"+day+"天"+hour+"小时"+minute+"分"+second+"秒"+"啦<br><span>时间过得真快，表白时的场景还历历在目（么么哒/）<br>现在却已经在一起这么久了，并且已经是老夫老妻的感觉了哈哈<br>今后不管面临多大的压力,不管前面的路如何崎岖<br>不管经历过什么，我依然坚信最浪漫的事就是和你一起慢慢变老<br>过去的23个生日我不在，但以后的每一个我都要在，爱你<br>你永远的猪头</span>"
+
+        // var index=0;
+        // var word=h1.innerHTML;
+        // function type(){
+        //     document.getElementById("h1").innerText = word.substring(0,index++);
+        // }
+        // setInterval(type, 50);
+
+        return true;
+    }
+
+
+
+
+//隐藏UI
+function hideUi(ui){
+  var cv = document.getElementById(ui);
+  cv.style.display = "none";
+
+}
+//hideUi("cv");
+
+function checkDate(){
+  var nowtime = new Date().getTime(); // 现在时间转换为时间戳
+  var futruetime =  new Date('2019,11,14').getTime(); // 未来时间转换为时间戳
+  var msec = nowtime-futruetime; // 毫秒 未来时间-现在时间
+  var time = (msec/1000);  // 毫秒/1000
+  var day = parseInt(time/86400); // 天  24*60*60*1000
+
+  var insertD = document.getElementById("insertDay").value;
+  if (insertD == day) {
+    return true;
+  }
+  else{
+    return false;
+  }
+  
+}
+
+function changeHead(sentence){
+  p1.innerHTML= sentence;
+}
+
+function checkName(){
+  var mName = document.getElementById("insertDay").value;
+  console.log(mName);
+  if (mName=="老公"){
+    return true;
+  }
+  return false;
+}
+function runHtml(){
+
+  if (mark==0){
+    alert("叫我一下，我就给你看");
+    mark =1;
+    insertDay.style.display="inline-block";
+    changeHead("我是谁啊？？");
+    document.getElementById("insertDay").disabled = false;
+    return;
+  }
+  if (checkName() && mark==1){
+    mark=2;
+    alert("哈哈，对啦，真棒")
+    changeHead("我们在一起多久啦：");
+    s1.style.display="inline-block";
+    return;
+  }
+  if(checkName()==false && mark==1){
+    alert("好好想一想");
+    alert("就两个字")
+    alert("应该叫我什么呢");
+    return;
+  }
+  if(checkDate()&& mark ==2){
+    setTimeout(time(h1,'2019,11,14'),1000);
+    return;
+  }
+  else {
+    alert("嗯？");
+    alert("居然连这个都不记得了？");
+    alert("再给你一次机会！！");
+  }
+}
+
+</script>
+
+</body>
+</html>
